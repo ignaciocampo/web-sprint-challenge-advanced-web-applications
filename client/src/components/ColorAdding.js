@@ -23,7 +23,7 @@ const ColorAdding = (props) => {
           .post("http://localhost:5000/api/colors")
           .then(res => {
             console.log(res);
-            setColorAdd("token", res.data);
+            setColorAdd( res.data);
           })
           .catch(err => console.log({ err }));
         }

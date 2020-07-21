@@ -9,13 +9,16 @@ const initialColor = {
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+const ColorList = ({ colors, updateColors, colorSetter }) => {
+  
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
+  const params = useParams();
   const { id } = useParams();
   const history = useHistory()
+
+ 
 
   const editColor = color => {
     setEditing(true);
@@ -24,6 +27,7 @@ const ColorList = ({ colors, updateColors }) => {
 
 
 
+console.log('here', colorToEdit)
 
 
     // Make a put request to save your updated color
@@ -31,21 +35,31 @@ const ColorList = ({ colors, updateColors }) => {
     // where is is saved right now?
 
     const saveEdit = e => {
-      axiosWithAuth();
-      e.preventDefault(e)
-      axios
-        .put(`http://localhost:5000/api/colors/${id}`, colorToEdit)
+
+      e.preventDefault()
+      axiosWithAuth()
+        .put(`/colors/${colorToEdit.id}`, colorToEdit)
         .then(res => {
           console.log(res.data)
-          updateColors(res.data)     
+          
+          colorSetter()
+          
         })
         .catch(err => console.log(err));
     };
+    // history.push(`/deleted`);
   // history.push(`/colors/${id}`);
 
-  const deleteColor = color => {
-    // make a delete request to delete this color
-  };
+  const deleteColor = e => {
+    axiosWithAuth()
+        .delete(`/colors/${colorToEdit.id}`)
+        .then(res => {
+          console.log(res.data)
+          colorSetter()
+        })
+        .catch(err => console.log(err));
+    };
+  
 
   return (
     <div className="colors-wrap">
@@ -55,7 +69,7 @@ const ColorList = ({ colors, updateColors }) => {
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={e => {
-                    e.stopPropagation();
+                    // e.stopPropagation();
                     deleteColor(color)
                   }
                 }>
@@ -107,3 +121,6 @@ const ColorList = ({ colors, updateColors }) => {
 };
 
 export default ColorList;
+
+
+

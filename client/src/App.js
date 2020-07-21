@@ -5,6 +5,7 @@ import PrivateRoute from "./components/PrivateRoute"
 import Login from "./components/Login";
 import "./styles.scss";
 import ColorList from "./components/ColorList";
+import Deleted from "./components/UpdatedColor"
 
 function App() {
   return (
@@ -17,7 +18,11 @@ function App() {
         */}
 
 <PrivateRoute exact path='/bubblepage' component={BubblePage}/>
-<PrivateRoute exact path='/colorlist' component={ColorList}/>
+<PrivateRoute exact path='/colors' component={ColorList}/>
+<Route path="/deleted" component={Deleted}/>
+
+       
+
 
       </div>
     </Router>
