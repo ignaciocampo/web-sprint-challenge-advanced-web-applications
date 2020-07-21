@@ -1,31 +1,65 @@
 import React, { useState } from "react";
+import { useParams, useHistory} from "react-router-dom";
 import axios from "axios";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 const initialColor = {
+  id: 1,
   color: "",
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+const ColorList = ({ colors, updateColors, colorSetter }) => {
+  
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+
+  const params = useParams();
+  const { id } = useParams();
+  const history = useHistory()
+
+ 
 
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
   };
 
-  const saveEdit = e => {
-    e.preventDefault();
+
+
+console.log('here', colorToEdit)
+
+
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
-  };
 
-  const deleteColor = color => {
-    // make a delete request to delete this color
-  };
+    const saveEdit = e => {
+
+      e.preventDefault()
+      axiosWithAuth()
+        .put(`/colors/${colorToEdit.id}`, colorToEdit)
+        .then(res => {
+          console.log(res.data)
+          
+          colorSetter()
+          
+        })
+        .catch(err => console.log(err));
+    };
+    // history.push(`/deleted`);
+  // history.push(`/colors/${id}`);
+
+  const deleteColor = e => {
+    axiosWithAuth()
+        .delete(`/colors/${colorToEdit.id}`)
+        .then(res => {
+          console.log(res.data)
+          colorSetter()
+        })
+        .catch(err => console.log(err));
+    };
+  
 
   return (
     <div className="colors-wrap">
@@ -35,7 +69,7 @@ const ColorList = ({ colors, updateColors }) => {
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={e => {
-                    e.stopPropagation();
+                    // e.stopPropagation();
                     deleteColor(color)
                   }
                 }>
@@ -87,3 +121,6 @@ const ColorList = ({ colors, updateColors }) => {
 };
 
 export default ColorList;
+
+
+
